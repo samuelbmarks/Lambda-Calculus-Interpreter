@@ -1,2 +1,2 @@
 # Lambda-Calculus-Interpreter
-Lambda Calculus Interpreter from Prog Lang @ RPI
+Haskell Lambda Calculus Interpreter from Prog Lang @ RPI
