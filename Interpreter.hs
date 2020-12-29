@@ -3,50 +3,6 @@ import Control.Exception
 import Debug.Trace
 import Data.List
 
-{-
----- Problem 1 ----
-
-Applicative Order Reduction
-
-E ::= x | \x.E1 | E1 E2
-
-interpret(x) = x
-interpret(\x.E1) =  if E1 containsRedex
-                    then (\x. interpret(E1))
-                    else \x.E1
-interpret(E1 E2) =  if E1 containsRedex
-                    then App (interpret(E1)) E2)
-                    else  
-                      (if E2 containsRedex
-                      then E1 (interpret(E2))
-                      else 
-                        (if E1 isLambda
-                        then substitute(E1 E2)
-                        else (E1 E2))
-                    )  
-
-When interpreting a lambda expression, we want to check if
-its expression E1 contains a redex. If it does, we will 
-return a lambda expression with the interpreted internal
-expression. If not, the expression cannot be reduced and 
-the original lambda expression is returned.
-
-When interpreting an application, we want to check if either
-expression, E1 or E2, contains a redex. If E1 does, we will
-return an application with the interpreted E1 and the original
-E2. If not, we check the same condition for E2 and return an
-application with E1 and the interpreted E2 if thats the case.
-Otherwise, we perform a substitution of E2 on E1 only if E1
-is a lambda expression. Finally, if none of these conditions
-satisfy, the orginal expression is not a redex and cannot be
-reduced.
-
-Repeating these interpret steps will reduce the original
-expression to normal form.
-
-Below is the full implementation:
--}
-
 ---- Data types ----
 
 type Name = String
@@ -167,21 +123,3 @@ appNF_n 0 expr = expr
 appNF_n n expr =  if ((appNF_OneStep expr) == Nothing) 
                   then expr 
                   else appNF_n (n-1) (getJust (appNF_OneStep expr))
-
-
-fun_a = 
-  let
-    x = 0
-    fun_c f = let x = 1 in f x
-    fun_d y = x + y
-    fun_b = let x = 3 in (fun_c fun_d)
-  in fun_b
-
-
-tits = 
-  let f (x:xs) = x : (f [ y | y <- xs, y `mod` x /= 0]) in f [2..]
-
-
-ip::[Int] -> [Int] -> Int
-ip [] [] = 0
-ip a b = (head a) * (head b) + (ip (tail a) (tail b)) 
